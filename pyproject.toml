@@ -1,0 +1,81 @@
+# 🎯 TEMPLATE INSTRUCTIONS - CRITICAL: Make your server unique!
+# 1. CHANGE FOLDER NAME: Rename "mcp_server" folder to YOUR unique name (snake_case)
+# 2. UPDATE IMPORTS: Update all imports in server.py, main.py, test_server.py
+# 3. Replace "your-mcp-server" with your actual server name (kebab-case)
+# 4. Update version, description, and author info  
+# 5. Remove unused dependencies (httpx, python-dotenv if not needed)
+# 6. Add your specific dependencies
+# 7. Update the console script name to match your server name
+
+# ⚠️ CRITICAL: To avoid conflicts, you MUST:
+# - Rename the "mcp_server" folder to something unique like "my_weather_server"
+# - Update all imports from "mcp_server" to your new folder name
+# - Use a unique project name that won't conflict with other MCP servers
+
+[project]
+name = "google-maps-mcp-server"
+version = "0.1.0"        # 👈 UPDATE: Your version number
+description = "Google Maps MCP Server - Access Google Maps APIs through MCP"
+readme = "README.md"
+requires-python = ">=3.11"
+
+# 👇 REPLACE: Update dependencies for your actual requirements
+dependencies = [
+    "mcp>=1.6.0", # ✅ KEEP: Always required for MCP servers
+    # TODO: Remove the following if you don't need them:
+    "requests>=2.31.0", # For HTTP requests to Google Maps APIs
+    "python-dotenv>=1.0.0", # For .env files
+    "jsonschema>=4.0.0", # For schema validation in tests
+    # TODO: Add your actual dependencies here:
+    # "requests>=2.31.0",    # Alternative to httpx
+    # "sqlite3",             # Database support
+    # "pandas>=2.0.0",       # Data processing
+    # "numpy>=1.24.0",       # Numerical computing
+    # "beautifulsoup4>=4.12.0",  # HTML parsing
+    # "aiofiles>=23.0.0",    # Async file operations
+    "googlemaps>=4.10.0",
+]
+
+# 👇 REPLACE: Update script name and import path to match your server
+[project.scripts]
+google-maps-server = "google_maps_mcp_server.__main__:main"
+
+# Example after renaming folder from "mcp_server" to "weather_server":
+# weather-api = "weather_server.__main__:main"
+
+# Optional: Add more metadata
+# [project.optional-dependencies]
+# dev = [
+#     "pytest>=7.0.0",
+#     "black>=23.0.0", 
+#     "ruff>=0.1.0",
+# ]
+#
+# [project.urls]
+# Homepage = "https://github.com/yourusername/your-mcp-server"
+# Repository = "https://github.com/yourusername/your-mcp-server"
+# Issues = "https://github.com/yourusername/your-mcp-server/issues"
+
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+# 👇 REPLACE: with your server name pascal case
+packages = ["google_maps_mcp_server"]
+# Ensure non-Python data is included in the wheel
+force-include = { "google_maps_mcp_server/tools.json" = "google_maps_mcp_server/tools.json" }
+
+[tool.hatch.build.targets.sdist]
+include = [
+  "google_maps_mcp_server/**",
+  "README.md",
+  "LICENSE",
+]
+
+# Example after renaming folder:
+# include = [
+#   "weather_server/**",
+#   "README.md", 
+#   "LICENSE",
+# ]

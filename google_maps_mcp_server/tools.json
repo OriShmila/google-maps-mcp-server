@@ -1,0 +1,377 @@
+{
+  "name": "GoogleMaps",
+  "tools": [
+    {
+      "name": "maps_geocode",
+      "description": "Convert an address into geographic coordinates using Google Maps Geocoding API",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "description": "The address to geocode"
+          }
+        },
+        "required": ["address"]
+      },
+      "outputSchema": {
+        "type": "object",
+        "description": "Geocoding result with location coordinates and address details",
+        "properties": {
+          "location": {
+            "type": "object",
+            "properties": {
+              "lat": { "type": "number" },
+              "lng": { "type": "number" }
+            }
+          },
+          "formatted_address": { "type": "string" },
+          "place_id": { "type": "string" }
+        }
+      }
+    },
+    {
+      "name": "maps_reverse_geocode",
+      "description": "Convert coordinates into an address using Google Maps Reverse Geocoding API",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "latitude": {
+            "type": "number",
+            "description": "Latitude coordinate"
+          },
+          "longitude": {
+            "type": "number",
+            "description": "Longitude coordinate"
+          }
+        },
+        "required": ["latitude", "longitude"]
+      },
+      "outputSchema": {
+        "type": "object",
+        "description": "Reverse geocoding result with address information",
+        "properties": {
+          "formatted_address": { "type": "string" },
+          "place_id": { "type": "string" },
+          "address_components": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "long_name": { "type": "string" },
+                "short_name": { "type": "string" },
+                "types": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "maps_search_places",
+      "description": "Search for places using Google Places API Text Search",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query for places"
+          },
+          "location": {
+            "type": "object",
+            "properties": {
+              "latitude": { "type": "number" },
+              "longitude": { "type": "number" }
+            },
+            "description": "Optional center point for the search"
+          },
+          "radius": {
+            "type": "number",
+            "description": "Search radius in meters (max 50000)",
+            "maximum": 50000
+          }
+        },
+        "required": ["query"]
+      },
+      "outputSchema": {
+        "type": "object",
+        "description": "Places search results",
+        "properties": {
+          "places": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": { "type": "string" },
+                "formatted_address": { "type": "string" },
+                "location": {
+                  "type": "object",
+                  "properties": {
+                    "lat": { "type": "number" },
+                    "lng": { "type": "number" }
+                  }
+                },
+                "place_id": { "type": "string" },
+                "rating": { "type": "number" },
+                "types": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "maps_place_details",
+      "description": "Get detailed information about a specific place using Google Places API",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "place_id": {
+            "type": "string",
+            "description": "The place ID to get details for"
+          }
+        },
+        "required": ["place_id"]
+      },
+      "outputSchema": {
+        "type": "object",
+        "description": "Detailed place information",
+        "properties": {
+          "name": { "type": "string" },
+          "formatted_address": { "type": "string" },
+          "location": {
+            "type": "object",
+            "properties": {
+              "lat": { "type": "number" },
+              "lng": { "type": "number" }
+            }
+          },
+          "formatted_phone_number": { "type": "string" },
+          "website": { "type": "string" },
+          "rating": { "type": "number" },
+          "reviews": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "author_name": { "type": "string" },
+                "rating": { "type": "number" },
+                "text": { "type": "string" },
+                "time": { "type": "number" }
+              }
+            }
+          },
+          "opening_hours": {
+            "type": "object",
+            "properties": {
+              "weekday_text": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "open_now": { "type": "boolean" }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "maps_distance_matrix",
+      "description": "Calculate travel distance and time for multiple origins and destinations using Google Maps Distance Matrix API",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "origins": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Array of origin addresses or coordinates"
+          },
+          "destinations": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Array of destination addresses or coordinates"
+          },
+          "mode": {
+            "type": "string",
+            "description": "Travel mode",
+            "enum": ["driving", "walking", "bicycling", "transit"],
+            "default": "driving"
+          }
+        },
+        "required": ["origins", "destinations"]
+      },
+      "outputSchema": {
+        "type": "object",
+        "description": "Distance matrix calculation results",
+        "properties": {
+          "origin_addresses": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "destination_addresses": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "elements": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "status": { "type": "string" },
+                      "duration": {
+                        "type": "object",
+                        "properties": {
+                          "text": { "type": "string" },
+                          "value": { "type": "number" }
+                        }
+                      },
+                      "distance": {
+                        "type": "object",
+                        "properties": {
+                          "text": { "type": "string" },
+                          "value": { "type": "number" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "maps_elevation",
+      "description": "Get elevation data for locations on the earth using Google Maps Elevation API",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "locations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "latitude": { "type": "number" },
+                "longitude": { "type": "number" }
+              },
+              "required": ["latitude", "longitude"]
+            },
+            "description": "Array of locations to get elevation for"
+          }
+        },
+        "required": ["locations"]
+      },
+      "outputSchema": {
+        "type": "object",
+        "description": "Elevation data results",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "elevation": { "type": "number" },
+                "location": {
+                  "type": "object",
+                  "properties": {
+                    "lat": { "type": "number" },
+                    "lng": { "type": "number" }
+                  }
+                },
+                "resolution": { "type": "number" }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "maps_directions",
+      "description": "Get directions between two points using Google Maps Directions API",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "origin": {
+            "type": "string",
+            "description": "Starting point address or coordinates"
+          },
+          "destination": {
+            "type": "string",
+            "description": "Ending point address or coordinates"
+          },
+          "mode": {
+            "type": "string",
+            "description": "Travel mode",
+            "enum": ["driving", "walking", "bicycling", "transit"],
+            "default": "driving"
+          }
+        },
+        "required": ["origin", "destination"]
+      },
+      "outputSchema": {
+        "type": "object",
+        "description": "Directions with route information",
+        "properties": {
+          "routes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "summary": { "type": "string" },
+                "distance": {
+                  "type": "object",
+                  "properties": {
+                    "text": { "type": "string" },
+                    "value": { "type": "number" }
+                  }
+                },
+                "duration": {
+                  "type": "object",
+                  "properties": {
+                    "text": { "type": "string" },
+                    "value": { "type": "number" }
+                  }
+                },
+                "steps": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "instructions": { "type": "string" },
+                      "distance": {
+                        "type": "object",
+                        "properties": {
+                          "text": { "type": "string" },
+                          "value": { "type": "number" }
+                        }
+                      },
+                      "duration": {
+                        "type": "object",
+                        "properties": {
+                          "text": { "type": "string" },
+                          "value": { "type": "number" }
+                        }
+                      },
+                      "travel_mode": { "type": "string" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

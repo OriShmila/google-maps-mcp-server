@@ -1,0 +1,357 @@
+{
+  "test_cases": [
+    {
+      "name": "test_geocode_success",
+      "tool": "maps_geocode",
+      "arguments": {
+        "address": "1600 Amphitheatre Parkway, Mountain View, CA"
+      },
+      "description": "Test successful geocoding of Google headquarters address",
+      "expected_fields": ["location", "formatted_address", "place_id"],
+      "should_succeed": true
+    },
+    {
+      "name": "test_geocode_missing_address",
+      "tool": "maps_geocode",
+      "arguments": {},
+      "description": "Test geocoding with missing address parameter",
+      "expected_fields": [],
+      "should_succeed": false
+    },
+    {
+      "name": "test_geocode_empty_address",
+      "tool": "maps_geocode",
+      "arguments": {
+        "address": ""
+      },
+      "description": "Test geocoding with empty address",
+      "expected_fields": [],
+      "should_succeed": false
+    },
+    {
+      "name": "test_reverse_geocode_success",
+      "tool": "maps_reverse_geocode",
+      "arguments": {
+        "latitude": 37.4224764,
+        "longitude": -122.0842499
+      },
+      "description": "Test successful reverse geocoding of Google headquarters coordinates",
+      "expected_fields": [
+        "formatted_address",
+        "place_id",
+        "address_components"
+      ],
+      "should_succeed": true
+    },
+    {
+      "name": "test_reverse_geocode_missing_coordinates",
+      "tool": "maps_reverse_geocode",
+      "arguments": {
+        "latitude": 37.4224764
+      },
+      "description": "Test reverse geocoding with missing longitude",
+      "expected_fields": [],
+      "should_succeed": false
+    },
+    {
+      "name": "test_reverse_geocode_invalid_latitude",
+      "tool": "maps_reverse_geocode",
+      "arguments": {
+        "latitude": 91.0,
+        "longitude": -122.0842499
+      },
+      "description": "Test reverse geocoding with invalid latitude (>90)",
+      "expected_fields": [],
+      "should_succeed": false
+    },
+    {
+      "name": "test_reverse_geocode_invalid_longitude",
+      "tool": "maps_reverse_geocode",
+      "arguments": {
+        "latitude": 37.4224764,
+        "longitude": 181.0
+      },
+      "description": "Test reverse geocoding with invalid longitude (>180)",
+      "expected_fields": [],
+      "should_succeed": false
+    },
+    {
+      "name": "test_search_places_success",
+      "tool": "maps_search_places",
+      "arguments": {
+        "query": "restaurants in San Francisco"
+      },
+      "description": "Test successful places search for restaurants",
+      "expected_fields": ["places"],
+      "should_succeed": true
+    },
+    {
+      "name": "test_search_places_with_location",
+      "tool": "maps_search_places",
+      "arguments": {
+        "query": "coffee shops",
+        "location": {
+          "latitude": 37.7749,
+          "longitude": -122.4194
+        },
+        "radius": 5000
+      },
+      "description": "Test places search with location and radius",
+      "expected_fields": ["places"],
+      "should_succeed": true
+    },
+    {
+      "name": "test_search_places_missing_query",
+      "tool": "maps_search_places",
+      "arguments": {},
+      "description": "Test places search with missing query parameter",
+      "expected_fields": [],
+      "should_succeed": false
+    },
+    {
+      "name": "test_search_places_invalid_radius",
+      "tool": "maps_search_places",
+      "arguments": {
+        "query": "restaurants",
+        "radius": 60000
+      },
+      "description": "Test places search with radius exceeding maximum (50000m)",
+      "expected_fields": [],
+      "should_succeed": false
+    },
+    {
+      "name": "test_search_places_invalid_location",
+      "tool": "maps_search_places",
+      "arguments": {
+        "query": "restaurants",
+        "location": {
+          "latitude": 37.7749
+        }
+      },
+      "description": "Test places search with incomplete location (missing longitude)",
+      "expected_fields": [],
+      "should_succeed": false
+    },
+    {
+      "name": "test_place_details_success",
+      "tool": "maps_place_details",
+      "arguments": {
+        "place_id": "ChIJN1t_tDeuEmsRUsoyG83frY4"
+      },
+      "description": "Test successful place details retrieval (Google Australia)",
+      "expected_fields": ["name", "formatted_address", "location"],
+      "should_succeed": true
+    },
+    {
+      "name": "test_place_details_missing_place_id",
+      "tool": "maps_place_details",
+      "arguments": {},
+      "description": "Test place details with missing place_id parameter",
+      "expected_fields": [],
+      "should_succeed": false
+    },
+    {
+      "name": "test_place_details_empty_place_id",
+      "tool": "maps_place_details",
+      "arguments": {
+        "place_id": ""
+      },
+      "description": "Test place details with empty place_id",
+      "expected_fields": [],
+      "should_succeed": false
+    },
+    {
+      "name": "test_distance_matrix_success",
+      "tool": "maps_distance_matrix",
+      "arguments": {
+        "origins": ["San Francisco, CA"],
+        "destinations": ["Los Angeles, CA"],
+        "mode": "driving"
+      },
+      "description": "Test successful distance matrix calculation",
+      "expected_fields": [
+        "origin_addresses",
+        "destination_addresses",
+        "results"
+      ],
+      "should_succeed": true
+    },
+    {
+      "name": "test_distance_matrix_multiple_origins",
+      "tool": "maps_distance_matrix",
+      "arguments": {
+        "origins": ["San Francisco, CA", "Oakland, CA"],
+        "destinations": ["Los Angeles, CA", "San Diego, CA"],
+        "mode": "walking"
+      },
+      "description": "Test distance matrix with multiple origins and destinations",
+      "expected_fields": [
+        "origin_addresses",
+        "destination_addresses",
+        "results"
+      ],
+      "should_succeed": true
+    },
+    {
+      "name": "test_distance_matrix_missing_origins",
+      "tool": "maps_distance_matrix",
+      "arguments": {
+        "destinations": ["Los Angeles, CA"]
+      },
+      "description": "Test distance matrix with missing origins parameter",
+      "expected_fields": [],
+      "should_succeed": false
+    },
+    {
+      "name": "test_distance_matrix_empty_origins",
+      "tool": "maps_distance_matrix",
+      "arguments": {
+        "origins": [],
+        "destinations": ["Los Angeles, CA"]
+      },
+      "description": "Test distance matrix with empty origins array",
+      "expected_fields": [],
+      "should_succeed": false
+    },
+    {
+      "name": "test_distance_matrix_invalid_mode",
+      "tool": "maps_distance_matrix",
+      "arguments": {
+        "origins": ["San Francisco, CA"],
+        "destinations": ["Los Angeles, CA"],
+        "mode": "flying"
+      },
+      "description": "Test distance matrix with invalid travel mode",
+      "expected_fields": [],
+      "should_succeed": false
+    },
+    {
+      "name": "test_elevation_success",
+      "tool": "maps_elevation",
+      "arguments": {
+        "locations": [{ "latitude": 39.7391536, "longitude": -104.9847034 }]
+      },
+      "description": "Test successful elevation retrieval for Denver, CO",
+      "expected_fields": ["results"],
+      "should_succeed": true
+    },
+    {
+      "name": "test_elevation_multiple_locations",
+      "tool": "maps_elevation",
+      "arguments": {
+        "locations": [
+          { "latitude": 39.7391536, "longitude": -104.9847034 },
+          { "latitude": 36.1699412, "longitude": -115.1398296 }
+        ]
+      },
+      "description": "Test elevation retrieval for multiple locations",
+      "expected_fields": ["results"],
+      "should_succeed": true
+    },
+    {
+      "name": "test_elevation_missing_locations",
+      "tool": "maps_elevation",
+      "arguments": {},
+      "description": "Test elevation with missing locations parameter",
+      "expected_fields": [],
+      "should_succeed": false
+    },
+    {
+      "name": "test_elevation_empty_locations",
+      "tool": "maps_elevation",
+      "arguments": {
+        "locations": []
+      },
+      "description": "Test elevation with empty locations array",
+      "expected_fields": [],
+      "should_succeed": false
+    },
+    {
+      "name": "test_elevation_invalid_location_format",
+      "tool": "maps_elevation",
+      "arguments": {
+        "locations": [{ "latitude": 39.7391536 }]
+      },
+      "description": "Test elevation with incomplete location (missing longitude)",
+      "expected_fields": [],
+      "should_succeed": false
+    },
+    {
+      "name": "test_elevation_invalid_coordinates",
+      "tool": "maps_elevation",
+      "arguments": {
+        "locations": [{ "latitude": 91.0, "longitude": -104.9847034 }]
+      },
+      "description": "Test elevation with invalid latitude coordinate",
+      "expected_fields": [],
+      "should_succeed": false
+    },
+    {
+      "name": "test_directions_success",
+      "tool": "maps_directions",
+      "arguments": {
+        "origin": "San Francisco, CA",
+        "destination": "Los Angeles, CA",
+        "mode": "driving"
+      },
+      "description": "Test successful directions retrieval",
+      "expected_fields": ["routes"],
+      "should_succeed": true
+    },
+    {
+      "name": "test_directions_walking_mode",
+      "tool": "maps_directions",
+      "arguments": {
+        "origin": "Times Square, New York, NY",
+        "destination": "Central Park, New York, NY",
+        "mode": "walking"
+      },
+      "description": "Test directions with walking mode",
+      "expected_fields": ["routes"],
+      "should_succeed": true
+    },
+    {
+      "name": "test_directions_missing_origin",
+      "tool": "maps_directions",
+      "arguments": {
+        "destination": "Los Angeles, CA"
+      },
+      "description": "Test directions with missing origin parameter",
+      "expected_fields": [],
+      "should_succeed": false
+    },
+    {
+      "name": "test_directions_empty_origin",
+      "tool": "maps_directions",
+      "arguments": {
+        "origin": "",
+        "destination": "Los Angeles, CA"
+      },
+      "description": "Test directions with empty origin",
+      "expected_fields": [],
+      "should_succeed": false
+    },
+    {
+      "name": "test_directions_missing_destination",
+      "tool": "maps_directions",
+      "arguments": {
+        "origin": "San Francisco, CA"
+      },
+      "description": "Test directions with missing destination parameter",
+      "expected_fields": [],
+      "should_succeed": false
+    },
+    {
+      "name": "test_directions_invalid_mode",
+      "tool": "maps_directions",
+      "arguments": {
+        "origin": "San Francisco, CA",
+        "destination": "Los Angeles, CA",
+        "mode": "teleport"
+      },
+      "description": "Test directions with invalid travel mode",
+      "expected_fields": [],
+      "should_succeed": false
+    }
+  ]
+}
