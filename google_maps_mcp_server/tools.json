@@ -115,7 +115,7 @@
                   }
                 },
                 "place_id": { "type": "string" },
-                "rating": { "type": "number" },
+                "rating": { "type": ["number", "null"] },
                 "types": {
                   "type": "array",
                   "items": { "type": "string" }
@@ -154,14 +154,14 @@
           },
           "formatted_phone_number": { "type": "string" },
           "website": { "type": "string" },
-          "rating": { "type": "number" },
+          "rating": { "type": ["number", "null"] },
           "reviews": {
             "type": "array",
             "items": {
               "type": "object",
               "properties": {
                 "author_name": { "type": "string" },
-                "rating": { "type": "number" },
+                "rating": { "type": ["number", "null"] },
                 "text": { "type": "string" },
                 "time": { "type": "number" }
               }
