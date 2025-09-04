@@ -165,7 +165,6 @@
             }
           },
           "formatted_phone_number": { "type": "string" },
-          "website": { "type": "string" },
           "rating": { "type": ["number", "null"] },
           "reviews": {
             "type": "array",

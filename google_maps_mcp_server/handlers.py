@@ -123,9 +123,16 @@ async def maps_search_places(
             # Format photos to match schema
             photos = []
             for photo in place.get("photos", []):
+                photo_ref = photo.get("photo_reference", "")
+                # Convert photo reference to full URI
+                photo_uri = (
+                    f"https://maps.googleapis.com/maps/api/place/photo?photoreference={photo_ref}&key={GOOGLE_MAPS_API_KEY}&maxwidth={photo.get('width', 400)}"
+                    if photo_ref
+                    else ""
+                )
                 photos.append(
                     {
-                        "uri": photo.get("photo_reference", ""),
+                        "uri": photo_uri,
                         "width": photo.get("width", 0),
                         "height": photo.get("height", 0),
                     }
@@ -163,7 +170,6 @@ async def maps_place_details(place_id: str) -> Dict[str, Any]:
                 "formatted_address",
                 "geometry",
                 "formatted_phone_number",
-                "website",
                 "rating",
                 "reviews",
                 "opening_hours",
@@ -189,9 +195,16 @@ async def maps_place_details(place_id: str) -> Dict[str, Any]:
         # Format photos to match schema
         photos = []
         for photo in place_data.get("photos", []):
+            photo_ref = photo.get("photo_reference", "")
+            # Convert photo reference to full URI
+            photo_uri = (
+                f"https://maps.googleapis.com/maps/api/place/photo?photoreference={photo_ref}&key={GOOGLE_MAPS_API_KEY}&maxwidth={photo.get('width', 400)}"
+                if photo_ref
+                else ""
+            )
             photos.append(
                 {
-                    "uri": photo.get("photo_reference", ""),
+                    "uri": photo_uri,
                     "width": photo.get("width", 0),
                     "height": photo.get("height", 0),
                 }
@@ -202,7 +215,6 @@ async def maps_place_details(place_id: str) -> Dict[str, Any]:
             "formatted_address": place_data.get("formatted_address", ""),
             "location": place_data.get("geometry", {}).get("location", {}),
             "formatted_phone_number": place_data.get("formatted_phone_number", ""),
-            "website": place_data.get("website", ""),
             "rating": place_data.get("rating"),
             "reviews": reviews,
             "opening_hours": place_data.get("opening_hours", {}),
