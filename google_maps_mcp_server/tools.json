@@ -137,7 +137,7 @@
                     }
                   }
                 },
-                "place_uri": { "type": "string" }
+                "google_maps_uri": { "type": "string" }
               }
             }
           }
@@ -205,7 +205,7 @@
               }
             }
           },
-          "place_uri": { "type": "string" }
+          "google_maps_uri": { "type": "string" }
         }
       }
     },
