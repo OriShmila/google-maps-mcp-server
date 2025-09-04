@@ -21,8 +21,8 @@
           "location": {
             "type": "object",
             "properties": {
-              "lat": { "type": "number" },
-              "lng": { "type": "number" }
+              "latitude": { "type": "number" },
+              "longitude": { "type": "number" }
             }
           },
           "formatted_address": { "type": "string" },
@@ -110,8 +110,8 @@
                 "location": {
                   "type": "object",
                   "properties": {
-                    "lat": { "type": "number" },
-                    "lng": { "type": "number" }
+                    "latitude": { "type": "number" },
+                    "longitude": { "type": "number" }
                   }
                 },
                 "place_id": { "type": "string" },
@@ -160,8 +160,8 @@
           "location": {
             "type": "object",
             "properties": {
-              "lat": { "type": "number" },
-              "lng": { "type": "number" }
+              "latitude": { "type": "number" },
+              "longitude": { "type": "number" }
             }
           },
           "formatted_phone_number": { "type": "string" },
@@ -308,8 +308,8 @@
                 "location": {
                   "type": "object",
                   "properties": {
-                    "lat": { "type": "number" },
-                    "lng": { "type": "number" }
+                    "latitude": { "type": "number" },
+                    "longitude": { "type": "number" }
                   }
                 },
                 "resolution": { "type": "number" }
