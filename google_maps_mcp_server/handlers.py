@@ -244,7 +244,7 @@ async def maps_place_details(place_id: str) -> Dict[str, Any]:
             "reviews": reviews,
             "opening_hours": place_data.get("opening_hours", {}),
             "photos": photos,
-            "google_maps_uri": f"https://maps.google.com/maps/place/?q=place_id:{place_id}"
+            "google_maps_uri": f"https://maps.google.com/maps/place/?q=place_id:{place_id}",
         }
     except Exception as e:
         raise ValueError(f"Place details error: {e}")
