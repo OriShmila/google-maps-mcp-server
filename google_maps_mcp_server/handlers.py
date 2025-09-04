@@ -161,10 +161,16 @@ async def maps_search_places(
                     }
                 )
 
+            # For nearby search, Google API returns 'vicinity' instead of 'formatted_address'
+            # Use formatted_address if available, otherwise fall back to vicinity
+            formatted_address = place.get("formatted_address", None) or place.get(
+                "vicinity", None
+            )
+
             places.append(
                 {
                     "name": place.get("name", ""),
-                    "formatted_address": place.get("formatted_address", ""),
+                    "formatted_address": formatted_address,
                     "location": place.get("geometry", {}).get("location", {}),
                     "place_id": place.get("place_id", ""),
                     "rating": place.get("rating"),
