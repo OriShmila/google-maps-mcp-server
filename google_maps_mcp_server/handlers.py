@@ -147,7 +147,7 @@ async def maps_search_places(
                     "rating": place.get("rating"),
                     "types": place.get("types", []),
                     "photos": photos,
-                    "google_maps_uri": place.get("url", ""),
+                    "place_uri": place.get("url", ""),
                 }
             )
 
@@ -219,7 +219,7 @@ async def maps_place_details(place_id: str) -> Dict[str, Any]:
             "reviews": reviews,
             "opening_hours": place_data.get("opening_hours", {}),
             "photos": photos,
-            "google_maps_uri": place_data.get("url", ""),
+            "place_uri": place_data.get("url", ""),
         }
     except Exception as e:
         raise ValueError(f"Place details error: {e}")
