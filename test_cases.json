@@ -32,8 +32,8 @@
       "name": "test_reverse_geocode_success",
       "tool": "maps_reverse_geocode",
       "arguments": {
-        "latitude": 37.4224764,
-        "longitude": -122.0842499
+        "lat": 37.4224764,
+        "lng": -122.0842499
       },
       "description": "Test successful reverse geocoding of Google headquarters coordinates",
       "expected_fields": [
@@ -47,7 +47,7 @@
       "name": "test_reverse_geocode_missing_coordinates",
       "tool": "maps_reverse_geocode",
       "arguments": {
-        "latitude": 37.4224764
+        "lat": 37.4224764
       },
       "description": "Test reverse geocoding with missing longitude",
       "expected_fields": [],
@@ -57,8 +57,8 @@
       "name": "test_reverse_geocode_invalid_latitude",
       "tool": "maps_reverse_geocode",
       "arguments": {
-        "latitude": 91.0,
-        "longitude": -122.0842499
+        "lat": 91.0,
+        "lng": -122.0842499
       },
       "description": "Test reverse geocoding with invalid latitude (>90)",
       "expected_fields": [],
@@ -68,8 +68,8 @@
       "name": "test_reverse_geocode_invalid_longitude",
       "tool": "maps_reverse_geocode",
       "arguments": {
-        "latitude": 37.4224764,
-        "longitude": 181.0
+        "lat": 37.4224764,
+        "lng": 181.0
       },
       "description": "Test reverse geocoding with invalid longitude (>180)",
       "expected_fields": [],
@@ -79,7 +79,12 @@
       "name": "test_search_places_success",
       "tool": "maps_search_places",
       "arguments": {
-        "query": "restaurants in San Francisco"
+        "query": "restaurants in San Francisco",
+        "location": {
+          "lat": 37.7749,
+          "lng": -122.4194
+        },
+        "radius": 5000
       },
       "description": "Test successful places search for restaurants",
       "expected_fields": ["places"],
@@ -91,8 +96,8 @@
       "arguments": {
         "query": "coffee shops",
         "location": {
-          "latitude": 37.7749,
-          "longitude": -122.4194
+          "lat": 37.7749,
+          "lng": -122.4194
         },
         "radius": 5000
       },
@@ -125,10 +130,63 @@
       "arguments": {
         "query": "restaurants",
         "location": {
-          "latitude": 37.7749
+          "lat": 37.7749
         }
       },
       "description": "Test places search with incomplete location (missing longitude)",
+      "expected_fields": [],
+      "should_succeed": false
+    },
+    {
+      "name": "test_search_places_sort_prominence",
+      "tool": "maps_search_places",
+      "arguments": {
+        "query": "coffee shops",
+        "location": {
+          "lat": 37.7749,
+          "lng": -122.4194
+        },
+        "radius": 5000,
+        "sort_by": "prominence"
+      },
+      "description": "Test places search with prominence sorting",
+      "expected_fields": ["places"],
+      "should_succeed": true
+    },
+    {
+      "name": "test_search_places_sort_distance",
+      "tool": "maps_search_places",
+      "arguments": {
+        "query": "restaurants",
+        "location": {
+          "lat": 37.7749,
+          "lng": -122.4194
+        },
+        "sort_by": "distance"
+      },
+      "description": "Test places search with distance sorting",
+      "expected_fields": ["places"],
+      "should_succeed": true
+    },
+    {
+      "name": "test_search_places_sort_distance_no_location",
+      "tool": "maps_search_places",
+      "arguments": {
+        "query": "restaurants",
+        "sort_by": "distance"
+      },
+      "description": "Test places search with distance sorting but no location (should fail)",
+      "expected_fields": [],
+      "should_succeed": false
+    },
+    {
+      "name": "test_search_places_invalid_sort",
+      "tool": "maps_search_places",
+      "arguments": {
+        "query": "restaurants",
+        "sort_by": "popularity"
+      },
+      "description": "Test places search with invalid sort_by parameter",
       "expected_fields": [],
       "should_succeed": false
     },
@@ -229,7 +287,7 @@
       "name": "test_elevation_success",
       "tool": "maps_elevation",
       "arguments": {
-        "locations": [{ "latitude": 39.7391536, "longitude": -104.9847034 }]
+        "locations": [{ "lat": 39.7391536, "lng": -104.9847034 }]
       },
       "description": "Test successful elevation retrieval for Denver, CO",
       "expected_fields": ["results"],
@@ -240,8 +298,8 @@
       "tool": "maps_elevation",
       "arguments": {
         "locations": [
-          { "latitude": 39.7391536, "longitude": -104.9847034 },
-          { "latitude": 36.1699412, "longitude": -115.1398296 }
+          { "lat": 39.7391536, "lng": -104.9847034 },
+          { "lat": 36.1699412, "lng": -115.1398296 }
         ]
       },
       "description": "Test elevation retrieval for multiple locations",
@@ -270,7 +328,7 @@
       "name": "test_elevation_invalid_location_format",
       "tool": "maps_elevation",
       "arguments": {
-        "locations": [{ "latitude": 39.7391536 }]
+        "locations": [{ "lat": 39.7391536 }]
       },
       "description": "Test elevation with incomplete location (missing longitude)",
       "expected_fields": [],
@@ -280,7 +338,7 @@
       "name": "test_elevation_invalid_coordinates",
       "tool": "maps_elevation",
       "arguments": {
-        "locations": [{ "latitude": 91.0, "longitude": -104.9847034 }]
+        "locations": [{ "lat": 91.0, "lng": -104.9847034 }]
       },
       "description": "Test elevation with invalid latitude coordinate",
       "expected_fields": [],

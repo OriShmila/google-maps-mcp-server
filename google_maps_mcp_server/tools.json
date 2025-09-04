@@ -21,8 +21,8 @@
           "location": {
             "type": "object",
             "properties": {
-              "latitude": { "type": "number" },
-              "longitude": { "type": "number" }
+              "lat": { "type": "number" },
+              "lng": { "type": "number" }
             }
           },
           "formatted_address": { "type": "string" },
@@ -36,16 +36,16 @@
       "inputSchema": {
         "type": "object",
         "properties": {
-          "latitude": {
+          "lat": {
             "type": "number",
             "description": "Latitude coordinate"
           },
-          "longitude": {
+          "lng": {
             "type": "number",
             "description": "Longitude coordinate"
           }
         },
-        "required": ["latitude", "longitude"]
+        "required": ["lat", "lng"]
       },
       "outputSchema": {
         "type": "object",
@@ -83,15 +83,21 @@
           "location": {
             "type": "object",
             "properties": {
-              "latitude": { "type": "number" },
-              "longitude": { "type": "number" }
+              "lat": { "type": "number" },
+              "lng": { "type": "number" }
             },
             "description": "Optional center point for the search"
           },
           "radius": {
             "type": "number",
-            "description": "Search radius in meters (max 50000)",
+            "description": "Search radius in meters (max 50000), if provided, location must also be provided. Always use this option for sear",
             "maximum": 50000
+          },
+          "sort_by": {
+            "type": "string",
+            "description": "Sort results by prominence or distance",
+            "enum": ["prominence", "distance"],
+            "default": "prominence"
           }
         },
         "required": ["query"]
@@ -110,8 +116,8 @@
                 "location": {
                   "type": "object",
                   "properties": {
-                    "latitude": { "type": "number" },
-                    "longitude": { "type": "number" }
+                    "lat": { "type": "number" },
+                    "lng": { "type": "number" }
                   }
                 },
                 "place_id": { "type": "string" },
@@ -160,8 +166,8 @@
           "location": {
             "type": "object",
             "properties": {
-              "latitude": { "type": "number" },
-              "longitude": { "type": "number" }
+              "lat": { "type": "number" },
+              "lng": { "type": "number" }
             }
           },
           "formatted_phone_number": { "type": "string" },
@@ -285,10 +291,10 @@
             "items": {
               "type": "object",
               "properties": {
-                "latitude": { "type": "number" },
-                "longitude": { "type": "number" }
+                "lat": { "type": "number" },
+                "lng": { "type": "number" }
               },
-              "required": ["latitude", "longitude"]
+              "required": ["lat", "lng"]
             },
             "description": "Array of locations to get elevation for"
           }
@@ -308,8 +314,8 @@
                 "location": {
                   "type": "object",
                   "properties": {
-                    "latitude": { "type": "number" },
-                    "longitude": { "type": "number" }
+                    "lat": { "type": "number" },
+                    "lng": { "type": "number" }
                   }
                 },
                 "resolution": { "type": "number" }

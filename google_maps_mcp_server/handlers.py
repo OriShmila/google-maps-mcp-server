@@ -56,20 +56,20 @@ async def maps_geocode(address: str) -> Dict[str, Any]:
         raise ValueError(f"Geocoding error: {e}")
 
 
-async def maps_reverse_geocode(latitude: float, longitude: float) -> Dict[str, Any]:
+async def maps_reverse_geocode(lat: float, lng: float) -> Dict[str, Any]:
     """Convert coordinates into an address."""
-    if latitude is None or longitude is None:
-        raise ValueError("latitude and longitude parameters are required")
+    if lat is None or lng is None:
+        raise ValueError("lat and lng parameters are required")
 
     # Validate coordinate ranges
-    if not (-90 <= latitude <= 90):
-        raise ValueError("latitude must be between -90 and 90")
-    if not (-180 <= longitude <= 180):
-        raise ValueError("longitude must be between -180 and 180")
+    if not (-90 <= lat <= 90):
+        raise ValueError("lat must be between -90 and 90")
+    if not (-180 <= lng <= 180):
+        raise ValueError("lng must be between -180 and 180")
 
     try:
         gmaps_client = get_gmaps_client()
-        results = gmaps_client.reverse_geocode((latitude, longitude))
+        results = gmaps_client.reverse_geocode((lat, lng))
 
         if not results:
             raise ValueError("No results found for the given coordinates")
@@ -88,6 +88,7 @@ async def maps_search_places(
     query: str,
     location: Optional[Dict[str, float]] = None,
     radius: Optional[int] = None,
+    sort_by: str = "prominence",
 ) -> Dict[str, Any]:
     """Search for places using Google Places API."""
     if not query:
@@ -97,26 +98,48 @@ async def maps_search_places(
     if radius is not None and (radius <= 0 or radius > 50000):
         raise ValueError("radius must be between 1 and 50000 meters")
 
+    # Validate sort_by parameter
+    valid_sort_options = ["prominence", "distance"]
+    if sort_by not in valid_sort_options:
+        raise ValueError(f"sort_by must be one of: {', '.join(valid_sort_options)}")
+
+    # For distance sorting, location is required since we need to use nearby search
+    if sort_by == "distance" and not location:
+        raise ValueError("location parameter is required when sort_by is 'distance'")
+
     try:
         gmaps_client = get_gmaps_client()
 
-        # Build search parameters
-        search_params = {}
+        # Use different API methods based on sort_by parameter
+        if sort_by == "distance":
+            # Use nearby search for distance sorting
+            if "lat" not in location or "lng" not in location:
+                raise ValueError("location must contain both lat and lng")
 
-        # Validate location if provided
-        if location:
-            if "latitude" not in location or "longitude" not in location:
-                raise ValueError("location must contain both latitude and longitude")
+            location_tuple = (location["lat"], location["lng"])
+            results = gmaps_client.places_nearby(
+                location=location_tuple,
+                keyword=query,  # Use query as keyword for nearby search
+                rank_by="distance",
+            )
+        else:
+            # Use text search for prominence sorting (default)
+            search_params = {}
 
-            # Only use location if radius is also provided
-            if radius:
-                search_params["location"] = (
-                    location["latitude"],
-                    location["longitude"],
-                )
-                search_params["radius"] = radius
+            # Validate location if provided
+            if location:
+                if "lat" not in location or "lng" not in location:
+                    raise ValueError("location must contain both lat and lng")
 
-        results = gmaps_client.places(query=query, **search_params)
+                # Only use location if radius is also provided
+                if radius:
+                    search_params["location"] = (
+                        location["lat"],
+                        location["lng"],
+                    )
+                    search_params["radius"] = radius
+
+            results = gmaps_client.places(query=query, **search_params)
 
         places = []
         for place in results.get("results", []):
@@ -276,14 +299,14 @@ async def maps_elevation(locations: List[Dict[str, float]]) -> Dict[str, Any]:
     # Validate location format
     location_tuples = []
     for loc in locations:
-        if "latitude" not in loc or "longitude" not in loc:
-            raise ValueError("Each location must contain both latitude and longitude")
+        if "lat" not in loc or "lng" not in loc:
+            raise ValueError("Each location must contain both lat and lng")
 
-        lat, lng = loc["latitude"], loc["longitude"]
+        lat, lng = loc["lat"], loc["lng"]
         if not (-90 <= lat <= 90):
-            raise ValueError(f"latitude {lat} must be between -90 and 90")
+            raise ValueError(f"lat {lat} must be between -90 and 90")
         if not (-180 <= lng <= 180):
-            raise ValueError(f"longitude {lng} must be between -180 and 180")
+            raise ValueError(f"lng {lng} must be between -180 and 180")
 
         location_tuples.append((lat, lng))
 
