@@ -119,7 +119,19 @@
                 "types": {
                   "type": "array",
                   "items": { "type": "string" }
-                }
+                },
+                "photos": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "uri": { "type": "string" },
+                      "width": { "type": "number" },
+                      "height": { "type": "number" }
+                    }
+                  }
+                },
+                "google_maps_uri": { "type": "string" }
               }
             }
           }
@@ -176,7 +188,19 @@
               },
               "open_now": { "type": "boolean" }
             }
-          }
+          },
+          "photos": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "uri": { "type": "string" },
+                "width": { "type": "number" },
+                "height": { "type": "number" }
+              }
+            }
+          },
+          "google_maps_uri": { "type": "string" }
         }
       }
     },

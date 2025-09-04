@@ -120,6 +120,17 @@ async def maps_search_places(
 
         places = []
         for place in results.get("results", []):
+            # Format photos to match schema
+            photos = []
+            for photo in place.get("photos", []):
+                photos.append(
+                    {
+                        "uri": photo.get("photo_reference", ""),
+                        "width": photo.get("width", 0),
+                        "height": photo.get("height", 0),
+                    }
+                )
+
             places.append(
                 {
                     "name": place.get("name", ""),
@@ -128,6 +139,8 @@ async def maps_search_places(
                     "place_id": place.get("place_id", ""),
                     "rating": place.get("rating"),
                     "types": place.get("types", []),
+                    "photos": photos,
+                    "google_maps_uri": place.get("url", ""),
                 }
             )
 
@@ -154,6 +167,8 @@ async def maps_place_details(place_id: str) -> Dict[str, Any]:
                 "rating",
                 "reviews",
                 "opening_hours",
+                "photo",
+                "url",
             ],
         )
 
@@ -171,6 +186,17 @@ async def maps_place_details(place_id: str) -> Dict[str, Any]:
                 }
             )
 
+        # Format photos to match schema
+        photos = []
+        for photo in place_data.get("photos", []):
+            photos.append(
+                {
+                    "uri": photo.get("photo_reference", ""),
+                    "width": photo.get("width", 0),
+                    "height": photo.get("height", 0),
+                }
+            )
+
         return {
             "name": place_data.get("name", ""),
             "formatted_address": place_data.get("formatted_address", ""),
@@ -180,6 +206,8 @@ async def maps_place_details(place_id: str) -> Dict[str, Any]:
             "rating": place_data.get("rating"),
             "reviews": reviews,
             "opening_hours": place_data.get("opening_hours", {}),
+            "photos": photos,
+            "google_maps_uri": place_data.get("url", ""),
         }
     except Exception as e:
         raise ValueError(f"Place details error: {e}")
