@@ -162,10 +162,27 @@ async def maps_search_places(
                 )
 
             # For nearby search, Google API returns 'vicinity' instead of 'formatted_address'
-            # Use formatted_address if available, otherwise fall back to vicinity
-            formatted_address = place.get("formatted_address", None) or place.get(
-                "vicinity", None
-            )
+            # Use reverse geocoding with coordinates to get complete address with postal code
+            formatted_address = place.get("formatted_address", None)
+            if not formatted_address and place.get("geometry", {}).get("location"):
+                try:
+                    # Use reverse geocoding to get complete formatted address from coordinates
+                    # This is more cost-effective than Place Details API calls
+                    location = place.get("geometry", {}).get("location", {})
+                    lat, lng = location.get("lat"), location.get("lng")
+                    if lat is not None and lng is not None:
+                        reverse_results = gmaps_client.reverse_geocode((lat, lng))
+                        if reverse_results:
+                            formatted_address = reverse_results[0].get(
+                                "formatted_address", None
+                            )
+                except Exception:
+                    # If reverse geocoding fails, fall back to vicinity
+                    pass
+
+            # Final fallback to vicinity if we still don't have formatted_address
+            if not formatted_address:
+                formatted_address = place.get("vicinity", None)
 
             places.append(
                 {
